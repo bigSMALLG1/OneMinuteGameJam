@@ -5,20 +5,22 @@ using UnityEngine.EventSystems;
 
 public class playerController : MonoBehaviour
 {
-    [Header ("Movement")]
+    [Header("Movement")]
     [SerializeField] float moveSpeed = 100f;
-    
-   
+
+
 
     private float verticalInput;
     private float horizontalInput;
     public Rigidbody2D rb;
     public GameObject Player;
-    public Camera playerCamera;
     private bool isMoving;
     private Vector3 origPos, targetPos;
     private float timeToMove = 0.4f;
     bool lookingRight = true;
+    public float leftBoundary = 0f;
+    public float rightBoundary = 3f;
+    public bool rightBoundaryEnabled = true;
 
     public Animator animator;
     void Start()
@@ -30,30 +32,33 @@ public class playerController : MonoBehaviour
     {
         float horizontalMovement = horizontalInput * moveSpeed;
         float verticalMovement = verticalInput * moveSpeed;
-        Vector2 moveDirection = new Vector2(horizontalMovement, verticalMovement);
 
         animator.SetBool("isMoving", isMoving);
 
-        if (Input.GetKey(KeyCode.W) && !isMoving)
-            StartCoroutine(GridMovement(Vector3.up));
-
         if (Input.GetKey(KeyCode.A) && !isMoving)
-            StartCoroutine(GridMovement(Vector3.left));
-
-        if (Input.GetKey(KeyCode.S) && !isMoving)
-            StartCoroutine(GridMovement(Vector3.down));
+        {
+            if (transform.position.x - 1f >= leftBoundary)
+            {
+                StartCoroutine(GridMovement(Vector3.left));
+            }
+        }
 
         if (Input.GetKey(KeyCode.D) && !isMoving)
-            StartCoroutine(GridMovement(Vector3.right));
+        {
+            if (!rightBoundaryEnabled || transform.position.x + 1f <= rightBoundary)
+                {
+                StartCoroutine(GridMovement(Vector3.right));
+                }
+        }
     }
 
     private void FixedUpdate()
     {
-        if(Input.GetKey(KeyCode.D) && !lookingRight)
+        if (Input.GetKey(KeyCode.D) && !lookingRight)
         {
             Flip();
         }
-        else if(Input.GetKey(KeyCode.A) && lookingRight)
+        else if (Input.GetKey(KeyCode.A) && lookingRight)
         {
             Flip();
         }
@@ -67,14 +72,14 @@ public class playerController : MonoBehaviour
 
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, direction, rayDistance);
 
-        if(hit.collider != null)
+        if (hit.collider != null)
         {
             isMoving = true;
             float elapsedTime = 0f;
             origPos = transform.position;
             targetPos = origPos + direction * 1f;
 
-            while(elapsedTime < timeToMove)
+            while (elapsedTime < timeToMove)
             {
                 transform.position = Vector3.Lerp(origPos, targetPos, elapsedTime / timeToMove);
                 elapsedTime += Time.deltaTime;
@@ -93,5 +98,10 @@ public class playerController : MonoBehaviour
         gameObject.transform.localScale = currentScale;
 
         lookingRight = !lookingRight;
+    }
+
+    public void DisableRightBoundary()
+    {
+        rightBoundaryEnabled = false;
     }
 }
