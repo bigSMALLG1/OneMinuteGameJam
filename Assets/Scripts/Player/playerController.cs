@@ -21,17 +21,20 @@ public class playerController : MonoBehaviour
     public float leftBoundary = 0f;
     public float rightBoundary = 3f;
     public bool rightBoundaryEnabled = true;
-
+    private bool isTripping = false;
     public Animator animator;
+    public bool hasTicket;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        hasTicket = false;
     }
 
     void Update()
     {
-        float horizontalMovement = horizontalInput * moveSpeed;
-        float verticalMovement = verticalInput * moveSpeed;
+        if (isTripping)
+            return;
+
 
         animator.SetBool("isMoving", isMoving);
 
@@ -46,9 +49,9 @@ public class playerController : MonoBehaviour
         if (Input.GetKey(KeyCode.D) && !isMoving)
         {
             if (!rightBoundaryEnabled || transform.position.x + 1f <= rightBoundary)
-                {
+            {
                 StartCoroutine(GridMovement(Vector3.right));
-                }
+            }
         }
     }
 
@@ -103,5 +106,22 @@ public class playerController : MonoBehaviour
     public void DisableRightBoundary()
     {
         rightBoundaryEnabled = false;
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "SittingGuy")
+        {
+            Debug.Log("h");
+            isTripping = true;
+
+            animator.SetBool("isTripping", isTripping);
+        }
+    }
+    
+    void OnFallAnimationComplete()
+    {
+        isTripping = false;
+        animator.SetBool("isTripping", false);
     }
 }
