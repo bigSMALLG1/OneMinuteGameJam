@@ -41,6 +41,7 @@ public class Exit : MonoBehaviour
             if (exitPopup != null)
             {
                 exitPopup.SetActive(false);
+                LoadNextScene();
             }
         }
     }

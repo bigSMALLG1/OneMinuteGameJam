@@ -4,11 +4,11 @@
 - Active scene:
   - Name: MainScene
   - Tags:
-    - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController, Greg
+    - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController, Greg, SittingGuy, BuffGuy
   - Layers:
     - Default, TransparentFX, Ignore Raycast, Water, UI
 - Active game object:
-  - Name: PlayerHolder
-  - Tag: Player
+  - Name: Canvas
+  - Tag: Untagged
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
